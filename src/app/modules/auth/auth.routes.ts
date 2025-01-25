@@ -38,7 +38,7 @@ router.post(
             next();
 
         } catch (error) {
-            return res.status(500).json({ message: "Failed to convert string to number" });
+            res.status(500).json({ message: "Failed to convert string to number" });
         }
     },
     validateRequest(AuthValidation.createVerifyEmailZodSchema),
@@ -70,7 +70,7 @@ router.post(
 
 router.delete(
     '/delete-account',
-    auth(USER_ROLES.ADMIN),
+    auth(USER_ROLES.USER),
     AuthController.deleteUser
 );
 

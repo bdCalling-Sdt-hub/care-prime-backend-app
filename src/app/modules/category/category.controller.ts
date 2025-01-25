@@ -3,16 +3,13 @@ import { StatusCodes } from 'http-status-codes'
 import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { CategoryService } from './category.service'
+import { getSingleFilePath } from '../../../shared/getFilePath'
 
 const createCategory = catchAsync(async (req: Request, res: Response) => {
-  const serviceData = req.body;
 
-  let image = "";
-  if (req.files && "image" in req.files && req.files.image[0]) {
-    image = `/images/${req.files.image[0].filename}`;
-  }
+  const image = getSingleFilePath(req.files, 'image');
   const data = {
-    ...serviceData,
+    ...req.body,
     image,
   };
 
@@ -20,7 +17,7 @@ const createCategory = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse(res, {
     success: true,
-    statusCode: StatusCodes.OK,
+    statusCode: StatusCodes.CREATED,
     message: 'Category create successfully',
     data: result,
   })
@@ -38,19 +35,14 @@ const getCategories = catchAsync(async (req: Request, res: Response) => {
 })
 
 const updateCategory = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id
-  const updateCategoryData = req.body;
 
-  let image;
-  if (req.files && "image" in req.files && req.files.image[0]) {
-    image = `/images/${req.files.image[0].filename}`;
-  }
+  const image = getSingleFilePath(req.files, 'image');
   const data = {
-    ...updateCategoryData,
-    image
+    ...req.body,
+    image,
   };
 
-  const result = await CategoryService.updateCategoryToDB(id, data)
+  const result = await CategoryService.updateCategoryToDB(req.params.id, data)
 
   sendResponse(res, {
     success: true,
@@ -61,8 +53,8 @@ const updateCategory = catchAsync(async (req: Request, res: Response) => {
 })
 
 const deleteCategory = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id
-  const result = await CategoryService.deleteCategoryToDB(id)
+
+  const result = await CategoryService.deleteCategoryToDB(req.params.id)
 
   sendResponse(res, {
     success: true,

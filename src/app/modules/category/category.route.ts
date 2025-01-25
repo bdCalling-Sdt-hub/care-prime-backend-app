@@ -7,15 +7,18 @@ import { CategoryValidation } from './category.validation'
 import fileUploadHandler from '../../middlewares/fileUploaderHandler'
 const router = express.Router()
 
-router.post(
-  '/create-service',
-  auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploadHandler(),
-  validateRequest(CategoryValidation.createCategoryZodSchema),
-  CategoryController.createCategory,
-)
+router.route('/')
+  .post(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    fileUploadHandler(),
+    validateRequest(CategoryValidation.createCategoryZodSchema),
+    CategoryController.createCategory,
+  )
+  .get(
+    CategoryController.getCategories
+  )
 
-router
-  .route('/:id')
+router.route('/:id')
   .patch(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploadHandler(),
     CategoryController.updateCategory,
@@ -24,10 +27,5 @@ router
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
     CategoryController.deleteCategory,
   )
-
-router.get('/',
-  auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER),
-  CategoryController.getCategories,
-)
 
 export const CategoryRoutes = router

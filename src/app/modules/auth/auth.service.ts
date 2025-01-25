@@ -331,7 +331,6 @@ const socialLoginFromDB = async (payload: IUser) => {
 }
 
 // delete user
-// delete user
 const deleteUserFromDB = async (user: JwtPayload, password: string) => {
 
     const isExistUser = await User.findById(user.id).select('+password');
