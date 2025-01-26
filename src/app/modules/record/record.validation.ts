@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const recordValidationSchema = z.object({
     body: z.object({
-        user: z.string({ required_error: "User is required" }).nonempty(),
         surgeryName: z.string({ required_error: "Surgery name is required" }).nonempty(),
         bodyArea: z.string({ required_error: "Body area is required" }).nonempty(),
         hospital: z.string({ required_error: "Hospital is required" }).nonempty(),
