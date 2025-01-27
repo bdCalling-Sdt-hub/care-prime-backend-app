@@ -4,6 +4,7 @@ import unlinkFile from "../../../shared/unlinkFile";
 import { IBlog } from "./blog.interface";
 import { Blog } from "./blog.model";
 import mongoose from "mongoose";
+import QueryBuilder from "../../../shared/QueryBuilder";
 
 const createBlogToDB = async (payload: IBlog): Promise<IBlog> => {
     
@@ -62,7 +63,7 @@ const getBlogDetailsFromDB = async (id: string): Promise<IBlog> => {
     }
 
 
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).select("title image description source");
 
     if (!blog) {
         throw new ApiError(StatusCodes.NOT_FOUND, 'Blog not found');
@@ -71,13 +72,15 @@ const getBlogDetailsFromDB = async (id: string): Promise<IBlog> => {
     return blog;
 };
 
-const getBlogsFromDB = async (query: Record<string, any>): Promise<IBlog[]> => {
+const getBlogsFromDB = async (query: Record<string, any>): Promise<{ blogs:IBlog[], pagination:any}> => {
 
-    const blogs = await Blog.find();
+    const result = new QueryBuilder(Blog.find(), query).paginate();
+    const blogs = await result.queryModel.select("title image description source").sort({ createdAt: -1 });
+    const pagination = await result.getPaginationInfo();
     if (!blogs) {
         throw new ApiError(StatusCodes.NOT_FOUND, 'No categories found');
     }
-    return blogs;
+    return {blogs, pagination};
 };
 
 export const BlogService = {

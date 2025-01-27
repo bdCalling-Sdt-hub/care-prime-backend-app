@@ -56,6 +56,8 @@ const updateTips =catchAsync(async (req:Request, res:Response) => {
 });
   
 const deleteTips = catchAsync(async (req:Request, res:Response) => {
+
+    
     
     const result = await TipsService.deleteTipsToDB(req.params.id);
   

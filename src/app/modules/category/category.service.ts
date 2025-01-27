@@ -3,17 +3,18 @@ import ApiError from '../../../errors/ApiErrors'
 import { ICategory } from './category.interface'
 import { Category } from './category.model'
 import unlinkFile from '../../../shared/unlinkFile'
+import QueryBuilder from '../../../shared/QueryBuilder'
 
 const createCategoryToDB = async (payload: ICategory) => {
-  const {name, image} = payload;
-  const isExistName = await Category.findOne({name: name})
+  const { name, image } = payload;
+  const isExistName = await Category.findOne({ name: name })
 
-  if(isExistName){
+  if (isExistName) {
     unlinkFile(image);
     throw new ApiError(StatusCodes.NOT_ACCEPTABLE, "This Category Name Already Exist");
   }
 
-  const createCategory:any = await Category.create(payload)
+  const createCategory: any = await Category.create(payload)
   if (!createCategory) {
     unlinkFile(image);
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create Category')
@@ -22,18 +23,24 @@ const createCategoryToDB = async (payload: ICategory) => {
   return createCategory
 }
 
-const getCategoriesFromDB = async (): Promise<ICategory[]> => {
-  const result = await Category.find({})
-  return result;
+const getCategoriesFromDB = async (query: Record<string, any>): Promise<{ categories: ICategory[], pagination: any }> => {
+
+  const result = new QueryBuilder(Category.find(), query).paginate();
+  const categories = await result.queryModel.select("name image");
+  const pagination = await result.getPaginationInfo();
+  if (!categories) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'No categories found');
+  }
+  return { categories, pagination };
 }
 
 const updateCategoryToDB = async (id: string, payload: ICategory) => {
-  const isExistCategory:any = await Category.findById(id);
+  const isExistCategory: any = await Category.findById(id);
 
-  if(!isExistCategory){
+  if (!isExistCategory) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Category doesn't exist");
   }
-  
+
   if (payload.image) {
     unlinkFile(isExistCategory?.image);
   }

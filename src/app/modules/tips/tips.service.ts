@@ -17,13 +17,13 @@ const createTipsToDB = async (payload:ITips): Promise<ITips> => {
 };
 
 const getAllTipsFromDB = async (): Promise<ITips[]>=> {
-  return await Tips.find({});
+  return await Tips.find({}).select("name image");
 };
 
 const updateTipsToDB = async (id: string, payload:ITips): Promise<ITips | null> => {
 
   if(!mongoose.Types.ObjectId.isValid(id)){
-    throw new ApiError(StatusCodes.NOT_ACCEPTABLE, "Invalid ")
+    throw new ApiError(StatusCodes.NOT_ACCEPTABLE, "Invalid Tips ID")
   }
 
   const isTipsExist:any = await Tips.findById(id);
