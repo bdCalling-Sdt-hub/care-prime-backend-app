@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from "express";
 import auth from '../../middlewares/auth';
 import { USER_ROLES } from '../../../enums/user'
 import { contactValidationSchema } from './contact.validation';
@@ -9,6 +9,16 @@ const router = express.Router();
 router.route('/')
     .post(
         auth(USER_ROLES.USER),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { sort, ...restPayload } = req.body;
+
+                req.body = { ...restPayload, sort: Number(sort) };
+                next();
+            } catch (error) {
+                res.status(500).json({ message: "Failed to convert String to Number" });
+            }
+        },
         validateRequest(contactValidationSchema),
         ContactController.insertContact
     )

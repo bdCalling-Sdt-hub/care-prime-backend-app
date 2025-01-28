@@ -32,7 +32,7 @@ const retrieveContacts = catchAsync(async (req: Request, res: Response) => {
 
 const updateContact = catchAsync(async (req: Request, res: Response) => {
 
-    const result = await ContactService.updateContactInDB(req.params.id, req.body);
+    const result = await ContactService.updateContactInDB(req.user, req.params.id, req.body);
   
     sendResponse(res, {
         statusCode: 200,

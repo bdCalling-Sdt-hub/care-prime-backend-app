@@ -7,28 +7,39 @@ import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 
 const insertContactInDB = async (contact: IContact): Promise<IContact> => {
+
+    const existingContact = await Contact.findOne({ sort: contact.sort, user: contact.user });
+    if (existingContact) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Contact with this sort already exists");
+    }
+
     const newContact = await Contact.create(contact);
-    if(!newContact) {
+    if (!newContact) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Error creating contact");
     }
     return await newContact.save();
 }
 
-const retrieveContacts = async (user: JwtPayload, query: Record<string, any>): Promise<{contacts: IContact[], pagination: any}> => {
-    const result = new QueryBuilder(Contact.find({user: user.id}), query).paginate();
+const retrieveContacts = async (user: JwtPayload, query: Record<string, any>): Promise<{ contacts: IContact[], pagination: any }> => {
+    const result = new QueryBuilder(Contact.find({ user: user.id }), query).paginate();
     const contacts = await result.queryModel.select("name phone").lean();
     const pagination = result.getPaginationInfo();
-    return {contacts, pagination};
+    return { contacts, pagination };
 }
 
-const updateContactInDB = async (id: string, payload: IContact): Promise<IContact> => {
+const updateContactInDB = async (user:JwtPayload,  id: string, payload: IContact): Promise<IContact> => {
 
-    if(!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Contact ID");
     }
 
-    const contact = await Contact.findByIdAndUpdate(id, payload, {new: true});
-    if(!contact) {
+    const existingContact = await Contact.findOne({ sort: payload.sort, user: user.id });
+    if (existingContact) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Contact with this sort already exists");
+    }
+
+    const contact = await Contact.findByIdAndUpdate(id, payload, { new: true });
+    if (!contact) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Failed to update Contact");
     }
     return contact;

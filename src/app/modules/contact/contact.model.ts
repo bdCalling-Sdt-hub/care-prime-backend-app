@@ -15,7 +15,11 @@ const contactSchema = new Schema<IContact>(
         phone: { 
             type: String, 
             required: true
-        }
+        },
+        sort: { 
+            type: Number, 
+            required: true
+        },
     },
     {
         timestamps: true

@@ -5,6 +5,7 @@ export type IContact = {
     user: Types.ObjectId;
     name: string;
     phone: string;
+    sort: number;
 }
 
 export type ContactModel = Model<IContact, Record<string, unknown>>;
