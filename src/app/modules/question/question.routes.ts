@@ -11,14 +11,13 @@ router.route("/")
         auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const { questions, campaign } = req.body;
+                const { questions, medication } = req.body;
 
                 if (Array.isArray(questions)) {
                     req.body = questions.map((question) => {
                         return {
                             ...question,
-                            campaign: campaign,
-                            brand: req.user.id
+                            medication
                         }
                     });
                 }
@@ -29,10 +28,28 @@ router.route("/")
         },
         validateRequest(QuestionValidationSchema),
         questionController.createQuestion
-    );
+    )
+    .patch(
+        auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { questions } = req.body;
+                req.body = questions;
+                next();
+            } catch (error) {
+                res.status(500).json({ message: "Need Array to insert Multiple Question together" });
+            }
+        },
+        questionController.updateQuestion
+    )
 
-router.get("/:id",
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.USER),
-    questionController.getQuestion
-);
+router.route("/:id")
+    .get(
+        auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.USER),
+        questionController.getQuestion
+    )
+    .delete(
+        auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+        questionController.deleteQuestion
+    )
 export const QuestionRoutes = router;

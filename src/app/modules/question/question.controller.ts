@@ -18,11 +18,36 @@ const createQuestion = catchAsync(async (req: Request, res: Response) => {
 const getQuestion = catchAsync(async (req: Request, res: Response) => {
     const result = await questionService.getQuestionsFromDB(req.params.id);
     sendResponse(res, {
-        statusCode: StatusCodes.CREATED,
+        statusCode: StatusCodes.OK,
         success: true,
         message: "Question retrieved successfully",
         data: result
     })
 })
 
-export const questionController = { createQuestion, getQuestion }
+const updateQuestion = catchAsync(async (req: Request, res: Response) => {
+    const result = await questionService.updateQuestionInDB(req.body);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Question retrieved successfully",
+        data: result
+    })
+})
+
+const deleteQuestion = catchAsync(async (req: Request, res: Response) => {
+    const result = await questionService.deleteQuestionFromDB(req.params.id);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Question retrieved successfully",
+        data: result
+    })
+})
+
+export const questionController = { 
+    createQuestion, 
+    getQuestion,
+    updateQuestion,
+    deleteQuestion 
+}
