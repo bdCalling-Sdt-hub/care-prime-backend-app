@@ -4,35 +4,39 @@ import { ISymptom } from "./symptom.interface";
 import { Symptom } from "./symptom.model";
 import mongoose from "mongoose";
 
-const insertSymptomInDB = async (payload: ISymptom): Promise<string>=>{
+const insertSymptomInDB = async (payload: ISymptom): Promise<string> => {
 
-    const isSymptomExist = await Symptom.exists({category: payload.category});
-    if(isSymptomExist){
+    const isSymptomExist = await Symptom.exists({ category: payload.category });
+    if (isSymptomExist) {
 
         await Symptom.findOneAndUpdate(
-            {category: payload.category},
+            { category: payload.category },
             payload,
-            {new: true}
+            { new: true }
         )
         return "Symptom Updated Successfully"
     }
 
     const symptom = await Symptom.create(payload);
-    if(!symptom){
+    if (!symptom) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Failed to create Symptom");
     }
 
     return "Symptom Created Successfully";
 }
 
-const symptomDetailsFromDB = async(id:string): Promise<ISymptom | null>=>{
+const symptomDetailsFromDB = async (id: string): Promise<ISymptom | {}> => {
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Symptom ID");
     }
 
-    const symptom: ISymptom | null = await Symptom.findById(id).lean();
-    return symptom;
+    const symptom: ISymptom | null = await Symptom.findOne({ category: id })
+        .populate("category", "name")
+        .lean()
+        .select("category tips contents");
+
+    return symptom || {};
 }
 
 export const SymptomService = {

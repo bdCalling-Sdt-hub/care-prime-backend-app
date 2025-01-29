@@ -1,27 +1,22 @@
 import { Schema, model } from "mongoose";
-import { ISymptom, SymptomModel } from "./symptom.interface";
+import { IContent, ISymptom, SymptomModel } from "./symptom.interface";
 
-const symptomSchema = new Schema<ISymptom>(
-    {
-        category: {
-            type: Schema.Types.ObjectId,
-            ref: 'Category',
-            required: true,
-            unique: true
-        },
-        tips: { type: String },
-        urgent_care_content: {
-            type: String,
-            required: true
-        },
-        call_content: {
-            type: String,
-            required: true
-        }
+const ContentSchema = new Schema<IContent>({
+    name: { type: String, required: true },
+    content: { type: String, required: true }
+});
+ 
+const SymptomSchema = new Schema<ISymptom>({
+    category: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
     },
-    {
-        timestamps: true
+    tips: { type: String },
+    contents: { 
+        type: [ContentSchema], 
+        required: true 
     }
-);
+});
 
-export const Symptom: SymptomModel = model<ISymptom, SymptomModel>('Symptom', symptomSchema);
+export const Symptom: SymptomModel = model<ISymptom, SymptomModel>('Symptom', SymptomSchema);
