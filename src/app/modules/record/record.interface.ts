@@ -1,15 +1,12 @@
 import { Model, Types } from "mongoose"
+import { IQuestion } from "../question/question.interface";
 
 export type IRecord = {
     _id?: Types.ObjectId;
     user: Types.ObjectId;
-    surgeryName: string;
-    bodyArea:string;
-    hospital:string;
-    surgeryDate: Date;
-    complications: string;
-    description: string;
-    reports: string;
+    medication: Types.ObjectId;
+    questions: IQuestion[];
+    reports: string[];
 }
 
 export type RecordModel = Model<IRecord, Record<string, unknown>>

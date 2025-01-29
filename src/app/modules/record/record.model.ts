@@ -1,6 +1,11 @@
 import { Schema, model } from "mongoose";
 import { IRecord, RecordModel } from "./record.interface";
 
+const QuestionsSchema = new Schema({
+    question: { type: String, required: true },
+    answer: { type: String, required: true }
+});
+
 const recordSchema = new Schema<IRecord>(
     {
         user: {
@@ -8,34 +13,21 @@ const recordSchema = new Schema<IRecord>(
             ref: 'User',
             required: true
         },
-        surgeryName: {
-            type: String,
+        medication: {
+            type: Schema.Types.ObjectId,
+            ref: 'Medication',
             required: true
         },
-        bodyArea: {
-            type: String,
+        questions: {
+            type: [QuestionsSchema],
             required: true
         },
-        hospital: {
-            type: String,
-            required: true
-        },
-        surgeryDate: {
-            type: Date,
-            required: true
-        },
-        complications: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            required: true
-        },
-        reports: {
-            type: String,
-            required: true
-        }
+        reports: [
+            {
+                type: String,
+                required: true
+            }
+        ]
     },
     {
         timestamps: true

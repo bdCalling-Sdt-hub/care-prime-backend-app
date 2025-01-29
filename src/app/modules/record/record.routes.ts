@@ -4,33 +4,41 @@ import { USER_ROLES } from "../../../enums/user";
 import fileUploadHandler from "../../middlewares/fileUploaderHandler";
 import { getMultipleFilesPath } from "../../../shared/getFilePath";
 import { RecordController } from "./record.controller";
+import validateRequest from "../../middlewares/validateRequest";
+import { recordValidationSchema } from "./record.validation";
 const router = express.Router();
 
 router.route('/')
     .post(
-        auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+        auth(USER_ROLES.USER),
         fileUploadHandler(),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
 
                 const reports = getMultipleFilesPath(req.files, 'image');
-                const { surgeryDate, ...restPayload } = req.body;
 
                 req.body = {
                     user: req.user.id,
-                    ...restPayload,
-                    surgeryDate: new Date(surgeryDate),
-                    reports
+                    reports,
+                    ...req.body
                 };
+
+                console.log(req.body);
                 next();
 
             } catch (error) {
-                res.status(500).json({ message: "Need Array to insert Multiple Question together" });
+                res.status(500).json({ message: "Need Array to insert Images" });
             }
         },
+        validateRequest(recordValidationSchema),
         RecordController.insertRecord
     )
+    .patch(
+        auth(USER_ROLES.USER),
+        RecordController.updateRecord
+    )
     .get(
+        auth(USER_ROLES.USER),
         RecordController.retrievedRecords
     );
 

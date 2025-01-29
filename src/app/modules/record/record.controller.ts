@@ -26,7 +26,19 @@ const retrievedRecords = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const updateRecord = catchAsync(async (req: Request, res: Response) => {
+    const result = await RecordService.updateRecordInDB(req.body.id, req.body.questions)
+  
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: 'Record Created successfully',
+        data: result
+    })
+})
+
 export const RecordController = {
     insertRecord,
-    retrievedRecords
+    retrievedRecords,
+    updateRecord
 }

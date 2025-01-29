@@ -8,16 +8,14 @@ interface IAuthenticationProps {
 }
 
 export type IUser = {
-    _id?: Types.ObjectId;
     name: string;
     appId: string;
     role: USER_ROLES;
-    contact: string;
     email: string;
     password: string;
-    location: string;
     profile: string;
     verified: boolean;
+    isSubscribed: boolean;
     authentication?: IAuthenticationProps;
 }
 
