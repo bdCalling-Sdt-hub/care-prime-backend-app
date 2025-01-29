@@ -21,6 +21,11 @@ export default{
         host: process.env.EMAIL_HOST,
         pass: process.env.EMAIL_PASS
     },
+    stripe:{
+        stripeSecretKey:process.env.STRIPE_API_SECRET,
+        webhookSecret:process.env.WEBHOOK_SECRET,
+        paymentSuccess: process.env.STRIPE_PAYMENT_SUCCESS_LINK
+    },
     admin: {
         email:process.env.ADMIN_EMAIL,
         password: process.env.ADMIN_PASSWORD
