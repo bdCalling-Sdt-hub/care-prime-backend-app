@@ -10,6 +10,7 @@ import { MedicationRoutes } from '../modules/medication/medication.routes';
 import { QuestionRoutes } from '../modules/question/question.routes';
 import { SubscriptionRoutes } from '../modules/subscription/subscription.routes';
 import { PackageRoutes } from '../modules/package/package.routes';
+import { SymptomRoutes } from '../modules/symptom/symptom.routes';
 const router = express.Router();
 
 const apiRoutes = [
@@ -24,6 +25,7 @@ const apiRoutes = [
     { path: "/question", route: QuestionRoutes },
     { path: "/subscription", route: SubscriptionRoutes },
     { path: "/package", route: PackageRoutes },
+    { path: "/symptom", route: SymptomRoutes },
 ]
 
 apiRoutes.forEach(route => router.use(route.path, route.route));
