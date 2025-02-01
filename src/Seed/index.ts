@@ -3,6 +3,8 @@ import { User } from '../app/modules/user/user.model';
 import config from '../config';
 import { USER_ROLES } from '../enums/user';
 import { logger } from '../shared/logger';
+import { IVisitor } from '../app/modules/visitor/visitor.interface';
+import { Visitor } from '../app/modules/visitor/visitor.model';
 
 const superUser = {
     firstName: 'Super',
@@ -13,7 +15,7 @@ const superUser = {
     verified: true,
 };
 
-const seedSuperAdmin = async () => {
+export const seedSuperAdmin = async () => {
     const isExistSuperAdmin = await User.findOne({
         role: USER_ROLES.SUPER_ADMIN,
     });
@@ -24,4 +26,9 @@ const seedSuperAdmin = async () => {
     }
 };
 
-export default seedSuperAdmin;
+export const insertVisitorInDB = async (ip: string)=> {
+    const visitor = await Visitor.findOne({ ip: ip });
+    if (!visitor) {
+        await Visitor.create({ip: ip});
+    }
+};

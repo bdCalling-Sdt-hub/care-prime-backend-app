@@ -4,6 +4,7 @@ import { ICategory } from './category.interface'
 import { Category } from './category.model'
 import unlinkFile from '../../../shared/unlinkFile'
 import QueryBuilder from '../../../shared/QueryBuilder'
+import { Symptom } from '../symptom/symptom.model'
 
 const createCategoryToDB = async (payload: ICategory) => {
   const { name, image } = payload;
@@ -53,7 +54,8 @@ const updateCategoryToDB = async (id: string, payload: ICategory) => {
 }
 
 const deleteCategoryToDB = async (id: string): Promise<ICategory | null> => {
-  const deleteCategory = await Category.findByIdAndDelete(id)
+  const deleteCategory = await Category.findByIdAndDelete(id);
+  await Symptom.findOneAndDelete({category: id});
   if (!deleteCategory) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Category doesn't exist")
   }

@@ -56,15 +56,8 @@ const updatePackageToDB = async(id: string, payload: IPackage): Promise<IPackage
 }
 
 
-const getPackageFromDB = async(paymentType: string): Promise<IPackage[]>=>{
-    const query:any = {
-        status: "Active"
-    }
-    if(paymentType){
-        query.paymentType = paymentType
-    }
-
-    const result = await Package.find(query);
+const getPackageFromDB = async(): Promise<IPackage[]>=>{
+    const result = await Package.find({status: "Active"}).select("-__v -createdAt -updatedAt -status -productId");
     return result;
 }
 
@@ -77,6 +70,7 @@ const getPackageDetailsFromDB = async(id: string): Promise<IPackage | null>=>{
 }
 
 const deletePackageToDB = async(id: string): Promise<IPackage | null>=>{
+    
     if(!mongoose.Types.ObjectId.isValid(id)){
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid ID")
     }

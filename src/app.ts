@@ -5,6 +5,7 @@ import { Morgan } from "./shared/morgan";
 import router from '../src/app/routes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import handleStripeWebhook from "./webhook/handleStripeWebhook";
+import { insertVisitorInDB } from "./Seed";
 const app = express();
 
 // morgan
@@ -31,6 +32,8 @@ app.use(express.static('uploads'));
 app.use('/api/v1', router);
 
 app.get("/", (req: Request, res: Response)=>{
+    const remoteAddress = req.ip || req.connection.remoteAddress;
+    insertVisitorInDB(remoteAddress as string)
     res.send("Hey, How can I assist you");
 })
 

@@ -14,7 +14,10 @@ router.route("/")
         validateRequest(CreatePackageZodSchema), 
         PackageController.createPackage
     )
-    .get(PackageController.getPackage)
+    .get(
+        auth(USER_ROLES.USER),
+        PackageController.getPackage
+    )
 
 router.route("/:id")
     .patch(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), PackageController.updatePackage)

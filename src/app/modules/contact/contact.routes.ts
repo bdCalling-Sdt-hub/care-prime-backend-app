@@ -32,5 +32,9 @@ router.route('/:id')
         auth(USER_ROLES.USER),
         ContactController.updateContact
     )
+    .delete(
+        auth(USER_ROLES.USER),
+        ContactController.deleteContact
+    )
 
 export const ContactRoutes = router;

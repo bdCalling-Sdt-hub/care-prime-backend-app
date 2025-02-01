@@ -35,8 +35,7 @@ const createNewSubscription = async (
     trxId: string,
     subscriptionId: string,
     currentPeriodStart: string,
-    currentPeriodEnd: string,
-    remaining:number
+    currentPeriodEnd: string
 
 ) => {
 
@@ -53,8 +52,7 @@ const createNewSubscription = async (
             subscriptionId,
             status: 'active',
             currentPeriodStart,
-            currentPeriodEnd,
-            remaining
+            currentPeriodEnd
         }
         await Subscription.findByIdAndUpdate(
             { _id: isExistSubscription._id },
@@ -71,8 +69,7 @@ const createNewSubscription = async (
             subscriptionId,
             status: 'active',
             currentPeriodStart,
-            currentPeriodEnd,
-            remaining
+            currentPeriodEnd
         });
         await newSubscription.save();
     }
@@ -106,21 +103,14 @@ export const handleSubscriptionCreated = async (data: Stripe.Subscription) => {
             trxId,
             subscription.id,
             currentPeriodStart,
-            currentPeriodEnd,
-            packageID.credit,
+            currentPeriodEnd
         );
 
         await User.findByIdAndUpdate(
             { _id: user._id },
-            { isSubscribed: true },
+            { isSubscribed: true, trial: false },
             { new: true }
         );
-
-        const notifications = {
-            text: `${user?.company} has arrived`,
-            link: `/subscription-earning?id=${user?._id}`
-        }
-        sendNotifications(notifications);
 
     } catch (error) {
         console.error('Error handling subscription creation:', error);

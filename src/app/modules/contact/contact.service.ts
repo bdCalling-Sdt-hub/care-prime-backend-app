@@ -22,20 +22,15 @@ const insertContactInDB = async (contact: IContact): Promise<IContact> => {
 
 const retrieveContacts = async (user: JwtPayload, query: Record<string, any>): Promise<{ contacts: IContact[], pagination: any }> => {
     const result = new QueryBuilder(Contact.find({ user: user.id }), query).paginate();
-    const contacts = await result.queryModel.select("name phone").lean();
-    const pagination = result.getPaginationInfo();
+    const contacts = await result.queryModel.select("name phone sort").sort({sort: 1}).lean();
+    const pagination =await result.getPaginationInfo();
     return { contacts, pagination };
 }
 
-const updateContactInDB = async (user:JwtPayload,  id: string, payload: IContact): Promise<IContact> => {
+const updateContactInDB = async (user: JwtPayload, id: string, payload: IContact): Promise<IContact> => {
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Contact ID");
-    }
-
-    const existingContact = await Contact.findOne({ sort: payload.sort, user: user.id });
-    if (existingContact) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Contact with this sort already exists");
     }
 
     const contact = await Contact.findByIdAndUpdate(id, payload, { new: true });
@@ -45,8 +40,22 @@ const updateContactInDB = async (user:JwtPayload,  id: string, payload: IContact
     return contact;
 }
 
+const deleteContactFromDB = async (id: string): Promise<IContact | null> => {
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Contact ID")
+    }
+
+    const deleteContact = await Contact.findByIdAndDelete(id);
+    if (!deleteContact) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Contact doesn't exist")
+    }
+    return deleteContact
+  }
+
 export const ContactService = {
     insertContactInDB,
     retrieveContacts,
-    updateContactInDB
+    updateContactInDB,
+    deleteContactFromDB
 }

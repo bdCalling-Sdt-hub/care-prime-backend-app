@@ -27,7 +27,7 @@ const updatePackage = catchAsync(async(req: Request, res: Response)=>{
 })
 
 const getPackage = catchAsync(async(req: Request, res: Response)=>{
-    const result = await PackageService.getPackageFromDB(req.query.paymentType as string);
+    const result = await PackageService.getPackageFromDB();
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,

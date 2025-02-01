@@ -5,8 +5,8 @@ import { errorLogger, logger } from "./shared/logger";
 import colors from 'colors';
 import { socketHelper } from "./helpers/socketHelper";
 import { Server } from "socket.io";
-import seedSuperAdmin from "./DB";
-import { deleteUnverifiedAccount } from "./shared/deleteUnverifiedAccount";
+import { cronJob } from "./shared/cronJob";
+import { seedSuperAdmin } from "./Seed";
 
 
 //uncaught exception
@@ -23,7 +23,7 @@ async function main() {
 
         // create super admin
         seedSuperAdmin();
-        deleteUnverifiedAccount();
+        cronJob();
 
         mongoose.connect(config.database_url as string);
         logger.info(colors.green('🚀 Database connected successfully'));

@@ -1,12 +1,11 @@
-import twilio from 'twilio';
 import config from '../config';
 import ApiError from '../errors/ApiErrors';
 import { StatusCodes } from 'http-status-codes';
+import twilioClient from '../config/twilio';
 
-const client = twilio(config.twilio.accountSid, config.twilio.authToken);
 const sendSMS = async (to: string, message: string) => {
     try {
-        await client.messages.create({
+        await twilioClient.messages.create({
             body: message,
             from: config.twilio.twilioNumber,
             to: to,

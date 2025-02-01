@@ -43,7 +43,11 @@ const userSchema = new Schema<IUser, UserModal>(
         },
         isSubscribed: {
             type: Boolean,
-            default: false
+            default: true
+        },
+        trial: {
+            type: Boolean,
+            default: true
         },
         authentication: {
             type: {

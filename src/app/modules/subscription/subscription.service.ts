@@ -29,7 +29,10 @@ const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<{ subscripti
 const subscriptionsFromDB = async (query: Record<string, unknown>): Promise<{subscriptions: ISubscription[], pagination:any}> => {
 
     const result = new QueryBuilder(Subscription.find(), query).paginate();
-    const subscriptions = await result.queryModel.populate("package", "title").lean();
+    const subscriptions = await result.queryModel
+        .populate("package", "title")
+        .select("-createdAt -updatedAt -__v -user -customerId -subscriptionId")
+        .lean();
     const pagination = await result.getPaginationInfo();
 
     return { subscriptions, pagination };

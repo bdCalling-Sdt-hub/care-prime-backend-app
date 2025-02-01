@@ -42,8 +42,22 @@ const updateContact = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const deleteContact = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await ContactService.deleteContactFromDB(req.params.id);
+  
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Contact deleted Successfully',
+        data: result
+    });
+});
+
+
 export const ContactController = {
     insertContact,
     retrieveContacts,
-    updateContact
+    updateContact,
+    deleteContact
 };
