@@ -9,4 +9,15 @@ export type IRecord = {
     reports: string[];
 }
 
+interface Question {
+    _id: string;
+    answer: string;
+}
+export interface IAnswer {
+    _id: string;
+    reports: string[];
+    questions: Question[];
+    deletedReports: string[];
+}
+
 export type RecordModel = Model<IRecord, Record<string, unknown>>

@@ -54,10 +54,23 @@ const deleteContact = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const sendMessage = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await ContactService.sendMessageFromDB(req.body);
+  
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Message Send Successfully',
+        data: result
+    });
+});
+
 
 export const ContactController = {
     insertContact,
     retrieveContacts,
     updateContact,
-    deleteContact
+    deleteContact,
+    sendMessage
 };

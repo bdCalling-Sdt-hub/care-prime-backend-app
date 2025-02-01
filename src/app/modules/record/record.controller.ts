@@ -10,7 +10,7 @@ const insertRecord = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
         success: true,
-        message: 'Record Created successfully',
+        message: 'Medical History Created successfully',
         data: result
     })
 })
@@ -21,19 +21,19 @@ const retrievedRecords = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
         success: true,
-        message: 'Record Created successfully',
-        data: result
+        message: 'Medical History Created successfully',
+        data: result.records,
+        pagination: result.pagination
     })
 })
 
 const updateRecord = catchAsync(async (req: Request, res: Response) => {
-    const result = await RecordService.updateRecordInDB(req.body.id, req.body.questions)
+    await RecordService.updateRecordInDB(req.body.id, req.body)
   
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
         success: true,
-        message: 'Record Created successfully',
-        data: result
+        message: 'Medical History Updated successfully'
     })
 })
 

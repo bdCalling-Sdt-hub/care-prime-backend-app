@@ -22,8 +22,6 @@ router.route('/')
                     reports,
                     ...req.body
                 };
-
-                console.log(req.body);
                 next();
 
             } catch (error) {
@@ -35,6 +33,22 @@ router.route('/')
     )
     .patch(
         auth(USER_ROLES.USER),
+        fileUploadHandler(),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+                const reports = getMultipleFilesPath(req.files, 'image');
+
+                req.body = {
+                    reports,
+                    ...req.body
+                };
+                next();
+
+            } catch (error) {
+                res.status(500).json({ message: "Need Array to insert Images" });
+            }
+        },
         RecordController.updateRecord
     )
     .get(

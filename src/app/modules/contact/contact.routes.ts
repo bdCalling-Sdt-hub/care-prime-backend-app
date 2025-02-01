@@ -22,6 +22,10 @@ router.route('/')
         validateRequest(contactValidationSchema),
         ContactController.insertContact
     )
+    .patch(
+        auth(USER_ROLES.USER),
+        ContactController.sendMessage
+    )
     .get(
         auth(USER_ROLES.USER),
         ContactController.retrieveContacts
