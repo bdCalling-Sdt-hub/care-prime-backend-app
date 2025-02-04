@@ -49,6 +49,15 @@ const userSchema = new Schema<IUser, UserModal>(
             type: Boolean,
             default: true
         },
+        contact: {
+            type: String,
+            default: ''
+        },
+        gender: {
+            type: String,
+            enum: ['Male', 'Female', 'Other'],
+            required: false,
+        },
         authentication: {
             type: {
                 isResetPassword: {

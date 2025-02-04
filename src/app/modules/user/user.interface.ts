@@ -15,6 +15,8 @@ export type IUser = {
     password: string;
     profile: string;
     verified: boolean;
+    contact: string;
+    gender: "Male" | "Female" | "Other";
     isSubscribed: boolean;
     trial: boolean;
     authentication?: IAuthenticationProps;

@@ -4,6 +4,7 @@ export type IBlog = {
     _id: Types.ObjectId;
     image: string;
     title: string;
+    summary: string;
     description: string;
     source?: string;
 }
