@@ -12,6 +12,8 @@ import { SubscriptionRoutes } from '../modules/subscription/subscription.routes'
 import { PackageRoutes } from '../modules/package/package.routes';
 import { SymptomRoutes } from '../modules/symptom/symptom.routes';
 import { VisitorRoutes } from '../modules/visitor/visitor.routes';
+import { FaqRoutes } from '../modules/faq/faq.route';
+import { RuleRoutes } from '../modules/rule/rule.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -28,6 +30,8 @@ const apiRoutes = [
     { path: "/package", route: PackageRoutes },
     { path: "/symptom", route: SymptomRoutes },
     { path: "/visitor", route: VisitorRoutes },
+    { path: "/faq", route: FaqRoutes },
+    { path: "/rule", route: RuleRoutes },
 ]
 
 apiRoutes.forEach(route => router.use(route.path, route.route));

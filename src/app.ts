@@ -34,7 +34,7 @@ app.use('/api/v1', router);
 app.get("/", (req: Request, res: Response)=>{
     const remoteAddress = req.ip || req.connection.remoteAddress;
     insertVisitorInDB(remoteAddress as string)
-    res.send("Hey, How can I assist you");
+    res.send("Welcome to the Care Prime World. How can I assist you");
 })
 
 //global error handle
