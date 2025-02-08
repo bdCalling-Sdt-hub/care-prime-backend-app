@@ -3,6 +3,7 @@ import ApiError from '../../../errors/ApiErrors';
 import { IFaq } from './faq.interface';
 import { Faq } from './faq.model';
 import mongoose from 'mongoose';
+import QueryBuilder from '../../../shared/QueryBuilder';
 
 
 const createFaqToDB = async (payload: IFaq): Promise<IFaq> => {
@@ -14,9 +15,11 @@ const createFaqToDB = async (payload: IFaq): Promise<IFaq> => {
     return faq;
 };
 
-const faqsFromDB = async (): Promise<IFaq[]> => {
-    const faqs = await Faq.find({});
-    return faqs;
+const faqsFromDB = async (query: Record<string, any>): Promise<{faqs: IFaq[], pagination: any}> => {
+  const result = new QueryBuilder(Faq.find(), query).paginate();
+  const faqs = await result.queryModel.select("question answer");
+  const pagination = await result.getPaginationInfo();
+  return {faqs, pagination};
 };
   
 const deleteFaqToDB = async (id: string): Promise<IFaq | undefined> => {
