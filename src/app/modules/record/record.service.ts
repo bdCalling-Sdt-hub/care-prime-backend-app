@@ -4,7 +4,7 @@ import { IAnswer, IRecord } from "./record.interface";
 import { Record } from "./record.model";
 import ApiError from "../../../errors/ApiErrors";
 import { StatusCodes } from "http-status-codes";
-import mongoose, { UpdateWriteOpResult } from "mongoose";
+import mongoose from "mongoose";
 import unlinkFile from "../../../shared/unlinkFile";
 
 const insertRecordInDB = async (payload: IRecord): Promise<IRecord> => {
@@ -29,7 +29,6 @@ const updateRecordInDB = async (id: string, payload: IAnswer): Promise<null> => 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid record id");
     }
-
 
     const record = await Record.findById(id).lean();
     if (!record) {

@@ -11,6 +11,7 @@ export type IRecord = {
 
 interface Question {
     _id: string;
+    type: string;
     answer: string;
 }
 export interface IAnswer {

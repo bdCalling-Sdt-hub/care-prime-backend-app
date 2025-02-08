@@ -3,7 +3,6 @@ import { User } from '../app/modules/user/user.model';
 import config from '../config';
 import { USER_ROLES } from '../enums/user';
 import { logger } from '../shared/logger';
-import { IVisitor } from '../app/modules/visitor/visitor.interface';
 import { Visitor } from '../app/modules/visitor/visitor.model';
 
 const superUser = {
