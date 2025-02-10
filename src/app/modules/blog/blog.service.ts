@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import QueryBuilder from "../../../shared/QueryBuilder";
 
 const createBlogToDB = async (payload: IBlog): Promise<IBlog> => {
-    
+
     const createBlog: any = await Blog.create(payload);
     if (!createBlog) {
         unlinkFile(payload.image);
@@ -19,7 +19,7 @@ const createBlogToDB = async (payload: IBlog): Promise<IBlog> => {
 
 const deleteBlogFromDB = async (id: string): Promise<IBlog> => {
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Blog Id');
     }
 
@@ -34,7 +34,7 @@ const deleteBlogFromDB = async (id: string): Promise<IBlog> => {
 
 const updateBlogInDB = async (id: string, payload: IBlog): Promise<IBlog> => {
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Blog Id');
     }
 
@@ -42,10 +42,12 @@ const updateBlogInDB = async (id: string, payload: IBlog): Promise<IBlog> => {
 
     if (payload.image && isExistBlog?.image) {
         unlinkFile(isExistBlog?.image);
-        throw new ApiError(StatusCodes.NOT_ACCEPTABLE, "This Blog Name Already Exist");
     }
 
-    const updatedBlog = await Blog.findByIdAndUpdate(id, payload, { new: true });
+    const updatedBlog = await Blog.findByIdAndUpdate(
+        { _id: id },
+        payload,
+        { new: true });
 
     if (!updatedBlog) {
         unlinkFile(payload.image);
@@ -58,7 +60,7 @@ const updateBlogInDB = async (id: string, payload: IBlog): Promise<IBlog> => {
 const getBlogDetailsFromDB = async (id: string): Promise<IBlog> => {
 
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Blog Id');
     }
 
@@ -72,15 +74,15 @@ const getBlogDetailsFromDB = async (id: string): Promise<IBlog> => {
     return blog;
 };
 
-const getBlogsFromDB = async (query: Record<string, any>): Promise<{ blogs:IBlog[], pagination:any}> => {
+const getBlogsFromDB = async (query: Record<string, any>): Promise<{ blogs: IBlog[], pagination: any }> => {
 
     const result = new QueryBuilder(Blog.find(), query).paginate();
-    const blogs = await result.queryModel.select("title image summary source createdAt").sort({ createdAt: -1 });
+    const blogs = await result.queryModel.select("title image summary description source createdAt").sort({ createdAt: -1 });
     const pagination = await result.getPaginationInfo();
     if (!blogs) {
         throw new ApiError(StatusCodes.NOT_FOUND, 'No categories found');
     }
-    return {blogs, pagination};
+    return { blogs, pagination };
 };
 
 export const BlogService = {

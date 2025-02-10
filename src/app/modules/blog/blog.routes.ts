@@ -36,6 +36,17 @@ router.route('/:id')
     )
     .patch(
         auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+        fileUploadHandler(),
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                
+                const image = getSingleFilePath(req.files, 'image');
+                req.body = { ...req.body, image };
+                next();
+            } catch (error) {
+                res.status(500).json({ message: "Failed to add the image" });
+            }
+        },
         BlogController.updateBlog
     )
     .get(
