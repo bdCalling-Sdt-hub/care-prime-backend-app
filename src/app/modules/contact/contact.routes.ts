@@ -31,6 +31,11 @@ router.route('/')
         ContactController.retrieveContacts
     );
 
+router.post("/group-message",
+    auth(USER_ROLES.USER),
+    ContactController.sendGroupMessage
+)
+
 router.route('/:id')
     .patch(
         auth(USER_ROLES.USER),

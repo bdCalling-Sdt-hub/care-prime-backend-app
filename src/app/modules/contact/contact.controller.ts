@@ -66,11 +66,24 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const sendGroupMessage = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await ContactService.sendGroupMessageFromDB(req.user, req.body.message);
+  
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Message Send Successfully',
+        data: result
+    });
+});
+
 
 export const ContactController = {
     insertContact,
     retrieveContacts,
     updateContact,
     deleteContact,
-    sendMessage
+    sendMessage,
+    sendGroupMessage
 };

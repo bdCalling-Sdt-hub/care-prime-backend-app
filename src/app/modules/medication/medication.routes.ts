@@ -35,8 +35,7 @@ router.route('/:id')
         fileUploadHandler(),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
-
-                const image = getMultipleFilesPath(req.files, 'image');
+                const image = getSingleFilePath(req.files, 'image');
                 req.body = {image, ...req.body};
                 next();
 

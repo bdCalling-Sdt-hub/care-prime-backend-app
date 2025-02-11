@@ -3,6 +3,7 @@ import ApiError from "../../../errors/ApiErrors";
 import { IMedication } from "./medication.interface";
 import { Medication } from "./medication.model";
 import mongoose from "mongoose";
+import unlinkFile from "../../../shared/unlinkFile";
 
 const createMedicationInDB = async (payload: IMedication): Promise<IMedication> => {
     const medication = await Medication.create(payload);
@@ -19,6 +20,13 @@ const getMedicationsFromDB = async (): Promise<IMedication[]> => {
 const updateMedicationInDB = async (id: string, payload: IMedication): Promise<IMedication> => {
 
     if(!mongoose.Types.ObjectId.isValid(id)) throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Object Id");
+
+    const isExistMedication = await Medication.findById(id).lean();
+
+    if(payload.image && isExistMedication?.image) {
+        unlinkFile(isExistMedication?.image);
+    }
+
     const medication = await Medication.findByIdAndUpdate(id, payload, {new: true});
     if(!medication) throw new ApiError(StatusCodes.NOT_FOUND, "Medication not found");
     return medication;

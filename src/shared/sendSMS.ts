@@ -15,6 +15,7 @@ const sendSMS = async (to: string, message: string) => {
             message: `Message sent successfully to ${to}`,
         };
     } catch (error) {
+        console.log(error)
         throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to send sms');
     }
 };

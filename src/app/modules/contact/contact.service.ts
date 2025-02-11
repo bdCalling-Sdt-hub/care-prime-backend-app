@@ -54,10 +54,10 @@ const deleteContactFromDB = async (id: string): Promise<IContact | null> => {
     return deleteContact
 }
 
-const sendMessageFromDB = async (payload:{ id: string, message: string})=>{
+const sendMessageFromDB = async (payload: { id: string, message: string }) => {
 
-    const {id, message} = payload;
-    
+    const { id, message } = payload;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Contact ID")
     }
@@ -68,13 +68,44 @@ const sendMessageFromDB = async (payload:{ id: string, message: string})=>{
     }
 
     const send = await sendSMS(contact?.phone, message)
-    console.log(send);
+    if (send.invalid) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, send.message)
+    }
+    return send
 }
+
+
+const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
+    const contacts = await Contact.find({ user: user.id }).lean();
+
+    if (!contacts?.length) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "No Found Contact for Sending Message");
+    }
+
+    const results = await Promise.allSettled(
+        contacts.map(contact => sendSMS(contact?.phone, message))
+    );
+
+    const failedMessages = results
+        .filter(result => result.status === "fulfilled" && result.value.invalid)
+        .map((result, index) => ({
+            phone: contacts[index]?.phone,
+            message: result.status === "fulfilled" ? result.value.message : "Unknown error"
+        }));
+
+    if (failedMessages.length > 0) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, `Some messages failed: ${JSON.stringify(failedMessages)}`);
+    }
+
+    return "Messages Sent Successfully";
+};
+
 
 export const ContactService = {
     insertContactInDB,
     retrieveContacts,
     updateContactInDB,
     deleteContactFromDB,
-    sendMessageFromDB
+    sendMessageFromDB,
+    sendGroupMessageFromDB
 }
