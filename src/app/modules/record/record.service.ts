@@ -6,6 +6,7 @@ import ApiError from "../../../errors/ApiErrors";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import unlinkFile from "../../../shared/unlinkFile";
+import { Medication } from "../medication/medication.model";
 
 const insertRecordInDB = async (payload: IRecord): Promise<IRecord> => {
     const record = await Record.create(payload);
@@ -16,7 +17,24 @@ const insertRecordInDB = async (payload: IRecord): Promise<IRecord> => {
 }
 
 const retrievedRecordsFromDB = async (user: JwtPayload, query: Record<string, any>): Promise<{ records: IRecord[], pagination: any }> => {
-    const result = new QueryBuilder(Record.find({ user: user.id }), query).paginate();
+
+    const search = query?.searchTerm || "";
+
+    const queryConditions: Record<string, any> = {
+        user: user.id
+    };
+
+    if (search) {
+        const medicationIds = await Medication.find({ name: { $regex: search, $options: "i" } }).distinct("_id");
+
+        queryConditions.$or = [
+            { medication: { $in: medicationIds } },
+            { "questions.question": { $regex: search, $options: "i" } },
+            { "questions.answer": { $regex: search, $options: "i" } }
+        ];
+    }
+
+    const result = new QueryBuilder(Record.find(queryConditions), query).paginate();
     const records = await result.queryModel.populate("medication", "name");
     const pagination = await result.getPaginationInfo();
     return { records, pagination };

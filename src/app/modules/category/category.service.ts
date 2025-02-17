@@ -26,13 +26,20 @@ const createCategoryToDB = async (payload: ICategory) => {
 
 const getCategoriesFromDB = async (query: Record<string, any>): Promise<{ categories: ICategory[], pagination: any }> => {
 
-  const result = new QueryBuilder(Category.find(), query).paginate();
-  const categories = await result.queryModel.select("name image");
+  const result = new QueryBuilder(Category.find(), query).paginate().search(["name"]);
+  const categories = await result.queryModel.select("name image").lean();
+
+  const newCategories = await Promise.all(categories.map(async (category: any) => {
+    const symptom = await Symptom.findOne({ category: category._id });
+    return {
+      ...category,
+      symptom: !!symptom
+    }
+  }))
+
+
   const pagination = await result.getPaginationInfo();
-  if (!categories) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'No categories found');
-  }
-  return { categories, pagination };
+  return { categories: newCategories, pagination };
 }
 
 const updateCategoryToDB = async (id: string, payload: ICategory) => {
@@ -55,7 +62,7 @@ const updateCategoryToDB = async (id: string, payload: ICategory) => {
 
 const deleteCategoryToDB = async (id: string): Promise<ICategory | null> => {
   const deleteCategory = await Category.findByIdAndDelete(id);
-  await Symptom.findOneAndDelete({category: id});
+  await Symptom.findOneAndDelete({ category: id });
   if (!deleteCategory) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Category doesn't exist")
   }

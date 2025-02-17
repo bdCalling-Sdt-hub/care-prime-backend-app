@@ -19,7 +19,7 @@ const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<{ subscripti
     if (subscriptionFromStripe?.status !== "active") {
         await Promise.all([
             User.findByIdAndUpdate(user.id, { isSubscribed: false }, { new: true }),
-            Subscription.findOneAndUpdate({ user: user.id }, { status: "expired" }, { new: true }),
+            Subscription.findOneAndUpdate({ user: user.id }, { status: "expired" }, { new: true })
         ]);
     }
 
@@ -31,7 +31,8 @@ const subscriptionsFromDB = async (query: Record<string, unknown>): Promise<{sub
     const result = new QueryBuilder(Subscription.find(), query).paginate();
     const subscriptions = await result.queryModel
         .populate("package", "title")
-        .select("-createdAt -updatedAt -__v -user -customerId -subscriptionId")
+        .populate("user", "name email profile")
+        .select("-createdAt -updatedAt -__v -customerId -subscriptionId")
         .lean();
     const pagination = await result.getPaginationInfo();
 

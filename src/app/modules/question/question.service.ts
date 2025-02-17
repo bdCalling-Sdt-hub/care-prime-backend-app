@@ -15,30 +15,37 @@ const createQuestionToDB = async (payload: IQuestion[]): Promise<IQuestion[]> =>
 
 const updateQuestionInDB = async (payload: IQuestion[]): Promise<mongoose.mongo.BulkWriteResult> => {
 
-    // Validate all IDs in the payload
-    const allValidIDs = payload.every((item: IQuestion) =>
-        mongoose.Types.ObjectId.isValid(item?._id as string)
-    );
-    if (!allValidIDs) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Object ID in payload");
-    }
-
-    const bulkOperations = payload.map((item: IQuestion) => ({
-        updateOne: {
-            filter: { _id: item._id },
-            update: { $set: item }
-        },
-    }));
+    const bulkOperations = payload.map((item: IQuestion) => {
+        if (item._id && mongoose.Types.ObjectId.isValid(item._id)) {
+            return {
+                updateOne: {
+                    filter: { _id: item._id },
+                    update: { $set: item },
+                },
+            };
+        } else {
+            return {
+                insertOne: {
+                    document: {
+                        medication: item.medication,
+                        type: item.type,
+                        question: item.question,
+                    },
+                },
+            };
+        }
+    });
 
     // Perform the bulk write operation
     const result = await Question.bulkWrite(bulkOperations);
 
-    if (result.modifiedCount === 0) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "No questions were updated");
+    if (result.modifiedCount === 0 && result.insertedCount === 0) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "No questions were updated or created");
     }
 
     return result;
 };
+
 
 const getQuestionsFromDB = async (id: string): Promise<IQuestion[]> => {
     

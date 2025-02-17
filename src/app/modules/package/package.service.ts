@@ -107,13 +107,15 @@ const deletePackageToDB = async(id: string): Promise<IPackage | null>=>{
     }
 
     const deleteProductFromStripe = await deleteStripeProductCatalog(isExistPackage.productId as string);
+
+    console.log(deleteProductFromStripe)
     if(deleteProductFromStripe.success === false){
         throw new ApiError(StatusCodes.BAD_REQUEST, "Failed to delete subscription product")
     }
 
     const result = await Package.findByIdAndUpdate(
         {_id: id},
-        {status: "Delete"},
+        { $set: { status: "Delete" } },
         {new: true}
     );
 

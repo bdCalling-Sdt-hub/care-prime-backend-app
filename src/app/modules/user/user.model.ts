@@ -109,12 +109,15 @@ userSchema.pre('save', async function (next) {
 
     //check user
     const isExist = await User.findOne({ email: this.email });
-    if (isExist) {
+    if (isExist && this.email) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Email already exist!');
     }
 
     //password hash
-    this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds));
+    if(this.password){
+        this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds));
+    }
+
     next();
 });
 export const User = model<IUser, UserModal>("User", userSchema)

@@ -26,9 +26,6 @@ const createPrivacyPolicyToDB = async (payload: IRule) => {
 
 const getPrivacyPolicyFromDB = async () => {
     const result = await Rule.findOne({ type: 'privacy' })
-    if (!result) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Privacy policy doesn't exist!")
-    }
     return result
 }
 
@@ -50,9 +47,7 @@ const createTermsAndConditionToDB = async (payload: IRule) => {
 
 const getTermsAndConditionFromDB = async () => {
     const result = await Rule.findOne({ type: 'terms' })
-    if (!result) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Terms and conditions doesn't  exist!")
-    }
+    
     return result
 }
 
