@@ -77,8 +77,9 @@ const createNewSubscription = async (
 
 export const handleSubscriptionCreated = async (data: Stripe.Subscription) => {
     try {
+
         // Retrieve subscription details from Stripe
-        const subscription = await stripe.subscriptions.retrieve(data.id);
+        const subscription = await stripe.subscriptions.retrieve(data.id as string);
         const customer = await stripe.customers.retrieve(subscription.customer as string) as Stripe.Customer;
         const productId = subscription.items.data[0]?.price?.product as string;
         const invoice = await stripe.invoices.retrieve(subscription.latest_invoice as string);
@@ -113,7 +114,6 @@ export const handleSubscriptionCreated = async (data: Stripe.Subscription) => {
         );
 
     } catch (error) {
-        console.error('Error handling subscription creation:', error);
-        throw error;
+        return error;
     }
 };

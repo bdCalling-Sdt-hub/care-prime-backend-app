@@ -9,7 +9,7 @@ router.get("/",
     SubscriptionController.subscriptions
 );
 
-router.get("/details", 
+router.get("/my-plan", 
     auth(USER_ROLES.USER), 
     SubscriptionController.subscriptionDetails
 );

@@ -6,11 +6,11 @@ import { User } from "../user/user.model";
 import QueryBuilder from "../../../shared/QueryBuilder";
 
 
-const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<{ subscription: ISubscription | {} }> => {
+const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<ISubscription | {} > => {
 
-    const subscription = await Subscription.findOne({ user: user.id }).populate("package", "title credit").lean();
+    const subscription = await Subscription.findOne({ user: user.id }).populate("package", "title").lean();
     if (!subscription) {
-        return { subscription: {} }; // Return empty object if no subscription found
+        return {}; // Return empty object if no subscription found
     }
 
     const subscriptionFromStripe = await stripe.subscriptions.retrieve(subscription.subscriptionId);

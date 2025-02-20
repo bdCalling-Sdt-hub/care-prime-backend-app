@@ -22,7 +22,7 @@ const subscriptionDetails = catchAsync( async(req: Request, res: Response)=>{
         statusCode: StatusCodes.OK,
         success: true,
         message: "Subscription Details Retrieved Successfully",
-        data: result.subscription
+        data: result
     })
 });
 

@@ -7,7 +7,7 @@ export type IPackage = {
     features: String[];
     price: Number;
     duration: '1 month' | '3 months' | '6 months' | '1 year';
-    productId?: String;
+    productId?: string;
     paymentLink?: string;
     status: 'Active' | 'Delete'
 }
