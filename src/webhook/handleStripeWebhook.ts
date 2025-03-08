@@ -43,11 +43,7 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
     try {
         switch (eventType) {
             case 'customer.subscription.created':
-            case 'charge.succeeded':
-            case 'charge.updated':
-            case 'payment_intent.succeeded':
-            case 'payment_intent.created':
-                // console.log(data);
+                console.log(data);
                 await handleSubscriptionCreated(data as Stripe.Subscription);
                 break;
 
