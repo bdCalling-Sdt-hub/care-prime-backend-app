@@ -8,7 +8,7 @@ import QueryBuilder from "../../../shared/QueryBuilder";
 
 const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<ISubscription | {}> => {
 
-    const subscription = await Subscription.findOne({ user: user.id }).populate("package", "title").lean();
+    const subscription = await Subscription.findOne({ user: user.id }).populate("package", "title duration features ").lean();
     if (!subscription) {
         return {}; // Return empty object if no subscription found
     }
