@@ -6,7 +6,7 @@ import { User } from "../user/user.model";
 import QueryBuilder from "../../../shared/QueryBuilder";
 
 
-const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<ISubscription | {} > => {
+const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<ISubscription | {}> => {
 
     const subscription = await Subscription.findOne({ user: user.id }).populate("package", "title").lean();
     if (!subscription) {
@@ -26,12 +26,20 @@ const subscriptionDetailsFromDB = async (user: JwtPayload): Promise<ISubscriptio
     return { subscription };
 };
 
-const subscriptionsFromDB = async (query: Record<string, unknown>): Promise<{subscriptions: ISubscription[], pagination:any}> => {
+const subscriptionsFromDB = async (query: Record<string, unknown>): Promise<{ subscriptions: ISubscription[], pagination: any }> => {
 
     const result = new QueryBuilder(Subscription.find(), query).paginate();
     const subscriptions = await result.queryModel
-        .populate("package", "title duration features")
-        .populate("user", "name email profile")
+        .populate([
+            {
+                path: "package",
+                select: "title duration features"
+            },
+            {
+                path: "user",
+                select: "name email profile"
+            }
+        ])
         .select("-createdAt -updatedAt -__v -customerId -subscriptionId")
         .lean();
     const pagination = await result.getPaginationInfo();
