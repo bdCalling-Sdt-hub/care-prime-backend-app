@@ -30,7 +30,7 @@ const subscriptionsFromDB = async (query: Record<string, unknown>): Promise<{sub
 
     const result = new QueryBuilder(Subscription.find(), query).paginate();
     const subscriptions = await result.queryModel
-        .populate("package", "title")
+        .populate("package", "title duration features")
         .populate("user", "name email profile")
         .select("-createdAt -updatedAt -__v -customerId -subscriptionId")
         .lean();
