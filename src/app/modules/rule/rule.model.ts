@@ -8,7 +8,7 @@ const ruleSchema = new Schema<IRule, RuleModel>({
   },
   type: {
     type: String,
-    enum: ['privacy', 'terms', 'about', 'disclaimer', 'resources'],
+    enum: ['privacy', 'terms', 'about', 'disclaimer', 'resource'],
     select: 0,
   },
 });

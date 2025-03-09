@@ -25,8 +25,7 @@ router
     .get(RuleController.getDisclaimer);
 
 //privacy policy
-router
-    .route('/resources')
+router.route('/resources')
     .post(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), RuleController.createResources)
     .get(RuleController.getResources);
 

@@ -104,23 +104,23 @@ const getDisclaimerFromDB = async () => {
 const createResourcesToDB = async (payload: IRule) => {
 
     // check if privacy policy exist or not
-    const isExistResources = await Rule.findOne({ type: 'resources' })
+    const isExistResources = await Rule.findOne({ type: 'resource' })
 
     if (isExistResources) {
-        const result = await Rule.findOneAndUpdate({type: 'resources'}, {content: payload?.content}, {new: true})
+        const result = await Rule.findOneAndUpdate({type: 'resource'}, {content: payload?.content}, {new: true})
         const message = "Resources Updated successfully"
         return { message, result }
     } else {
 
         // create new if not exist
-        const result = await Rule.create({ ...payload, type: 'Resources' })
+        const result = await Rule.create({ ...payload, type: 'resource' })
         const message = "Resources Created successfully"
         return {message, result}
     }
 }
 
 const getResourcesFromDB = async () => {
-    const result = await Rule.findOne({ type: 'resources' })
+    const result = await Rule.findOne({ type: 'resource' })
     return result
 }
   
