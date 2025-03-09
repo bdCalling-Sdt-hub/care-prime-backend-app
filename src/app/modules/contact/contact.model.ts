@@ -17,7 +17,7 @@ const contactSchema = new Schema<IContact>(
             required: true
         },
         sort: { 
-            type: Number, 
+            type: String, 
             required: true
         },
     },

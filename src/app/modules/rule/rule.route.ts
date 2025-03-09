@@ -18,6 +18,18 @@ router
     .post(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), RuleController.createPrivacyPolicy)
     .get(RuleController.getPrivacyPolicy);
 
+//privacy policy
+router
+    .route('/disclaimer')
+    .post(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), RuleController.createDisclaimer)
+    .get(RuleController.getDisclaimer);
+
+//privacy policy
+router
+    .route('/resources')
+    .post(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), RuleController.createResources)
+    .get(RuleController.getResources);
+
 //terms and conditions
 router
     .route('/terms-and-conditions')

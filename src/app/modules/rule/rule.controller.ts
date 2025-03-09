@@ -78,11 +78,62 @@ const getAbout = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+
+const createDisclaimer = catchAsync(async (req: Request, res: Response) => {
+    const { ...aboutData } = req.body
+    const result = await RuleService.createDisclaimerToDB(aboutData)
+  
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Disclaimer created successfully',
+        data: result
+    })
+})
+  
+const getDisclaimer = catchAsync(async (req: Request, res: Response) => {
+    const result = await RuleService.getDisclaimerFromDB()
+  
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Disclaimer retrieved successfully',
+        data: result
+    })
+})
+
+const createResources = catchAsync(async (req: Request, res: Response) => {
+    const { ...aboutData } = req.body
+    const result = await RuleService.createResourcesToDB(aboutData)
+  
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Resources created successfully',
+        data: result
+    })
+})
+  
+const getResources = catchAsync(async (req: Request, res: Response) => {
+    const result = await RuleService.getResourcesFromDB()
+  
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Resources retrieved successfully',
+        data: result
+    })
+})
+
 export const RuleController = {
     createPrivacyPolicy,
     getPrivacyPolicy,
     createTermsAndCondition,
     getTermsAndCondition,
     createAbout,
-    getAbout
+    getAbout,
+    createDisclaimer,
+    getDisclaimer,
+    createResources,
+    getResources
 }  

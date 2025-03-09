@@ -1,11 +1,11 @@
 import { Model, Types } from "mongoose";
 
 export type IContact = {
-    _id?: number;
+    _id?: Types.ObjectId;
     user: Types.ObjectId;
     name: string;
     phone: string;
-    sort: number;
+    sort: string;
 }
 
 export type ContactModel = Model<IContact, Record<string, unknown>>;

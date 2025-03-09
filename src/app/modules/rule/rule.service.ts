@@ -74,6 +74,55 @@ const getAboutFromDB = async () => {
     }
     return result
 }
+
+
+//privacy policy
+const createDisclaimerToDB = async (payload: IRule) => {
+
+    // check if privacy policy exist or not
+    const isExistDisclaimer = await Rule.findOne({ type: 'disclaimer' })
+
+    if (isExistDisclaimer) {
+        const result = await Rule.findOneAndUpdate({type: 'disclaimer'}, {content: payload?.content}, {new: true})
+        const message = "Disclaimer Updated successfully"
+        return { message, result }
+    } else {
+
+        // create new if not exist
+        const result = await Rule.create({ ...payload, type: 'disclaimer' })
+        const message = "Disclaimer Created successfully"
+        return {message, result}
+    }
+}
+
+const getDisclaimerFromDB = async () => {
+    const result = await Rule.findOne({ type: 'disclaimer' })
+    return result
+}
+
+//resources
+const createResourcesToDB = async (payload: IRule) => {
+
+    // check if privacy policy exist or not
+    const isExistResources = await Rule.findOne({ type: 'resources' })
+
+    if (isExistResources) {
+        const result = await Rule.findOneAndUpdate({type: 'resources'}, {content: payload?.content}, {new: true})
+        const message = "Resources Updated successfully"
+        return { message, result }
+    } else {
+
+        // create new if not exist
+        const result = await Rule.create({ ...payload, type: 'Resources' })
+        const message = "Resources Created successfully"
+        return {message, result}
+    }
+}
+
+const getResourcesFromDB = async () => {
+    const result = await Rule.findOne({ type: 'resources' })
+    return result
+}
   
 export const RuleService = {
     createPrivacyPolicyToDB,
@@ -81,5 +130,9 @@ export const RuleService = {
     createTermsAndConditionToDB,
     getTermsAndConditionFromDB,
     createAboutToDB,
-    getAboutFromDB
+    getAboutFromDB,
+    createDisclaimerToDB,
+    getDisclaimerFromDB,
+    createResourcesToDB,
+    getResourcesFromDB
 }  

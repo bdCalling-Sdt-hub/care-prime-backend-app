@@ -83,30 +83,9 @@ const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
             throw new ApiError(StatusCodes.BAD_REQUEST, "No Found Contact for Sending Message");
         }
 
-        const results = await Promise.allSettled(
+        await Promise.all(
             contacts.map(contact => sendSMS(contact?.phone, message))
         );
-
-        const failedMessages = results.map((result, index) => {
-            if (result.status === "rejected") {
-                return {
-                    phone: contacts[index]?.phone,
-                    message: result.reason?.message || "Unknown error",
-                };
-            }
-            if (result.status === "fulfilled" && result.value.invalid) {
-                return {
-                    phone: contacts[index]?.phone,
-                    message: result.value.message,
-                };
-            }
-            
-            return null;
-        }).filter(Boolean);
-
-        if (failedMessages.length > 0) {
-            throw new ApiError(StatusCodes.BAD_REQUEST, `Some messages failed: ${JSON.stringify(failedMessages)}`);
-        }
 
         return "Messages Sent Successfully";
     } catch (error) {
