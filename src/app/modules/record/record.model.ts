@@ -26,7 +26,7 @@ const recordSchema = new Schema<IRecord>(
         reports: [
             {
                 type: String,
-                required: true
+                required: false
             }
         ]
     },

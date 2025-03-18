@@ -6,7 +6,7 @@ export type IRecord = {
     user: Types.ObjectId;
     medication: Types.ObjectId;
     questions: IQuestion[];
-    reports: string[];
+    reports?: string[];
 }
 
 interface Question {
@@ -16,7 +16,7 @@ interface Question {
 }
 export interface IAnswer {
     _id: string;
-    reports: string[];
+    reports?: string[];
     questions: Question[];
     deletedReports: string[];
 }
