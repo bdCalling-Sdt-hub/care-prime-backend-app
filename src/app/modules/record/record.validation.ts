@@ -10,7 +10,6 @@ const QuestionsValidationSchema = z.object({
 export const recordValidationSchema = z.object({
     body: z.object({
         medication: checkValidID("Medication ID is Required"),
-        questions: z.array(QuestionsValidationSchema),
-        reports: z.array(z.string({ required_error: "Report Image is Required" }).nonempty())
+        questions: z.array(QuestionsValidationSchema)
     })
 });

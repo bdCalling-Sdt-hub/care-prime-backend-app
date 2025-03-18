@@ -53,18 +53,18 @@ const updateRecordInDB = async (id: string, payload: IAnswer): Promise<null> => 
         throw new ApiError(StatusCodes.BAD_REQUEST, "No Medical History Found For Update");
     }
 
-    const updatedReports = Array.isArray(deletedReports)
-        ? record.reports.filter((report) => !deletedReports.includes(report))
-        : record.reports;
+    const updatedReports = Array?.isArray(deletedReports)
+        ? record?.reports?.filter((report) => !deletedReports.includes(report))
+        : record?.reports;
 
 
-    if (Array.isArray(deletedReports)) {
-        deletedReports.forEach((report) => unlinkFile(report));
+    if (Array?.isArray(deletedReports)) {
+        deletedReports?.forEach((report) => unlinkFile(report));
     }
 
     // Append new reports
-    if (Array.isArray(reports) && reports.length > 0) {
-        updatedReports.push(...reports);
+    if (Array?.isArray(reports) && reports?.length > 0) {
+        updatedReports?.push(...reports);
     }
 
     const isRecordExist = await Record.findById(id).select("questions").lean();
@@ -74,7 +74,7 @@ const updateRecordInDB = async (id: string, payload: IAnswer): Promise<null> => 
 
     await Record.findByIdAndUpdate(
         { _id: id },
-        { $set: { reports: updatedReports.length > 0 ? updatedReports : record?.reports } },
+        { $set: { reports: Array?.isArray(updatedReports) && updatedReports?.length > 0 ? updatedReports : record?.reports } },
         { new: true }
     );
 
