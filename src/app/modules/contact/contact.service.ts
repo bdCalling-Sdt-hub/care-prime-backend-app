@@ -6,6 +6,7 @@ import ApiError from "../../../errors/ApiErrors";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import sendSMS from "../../../shared/sendSMS";
+import { User } from "../user/user.model";
 
 const insertContactInDB = async (contact: IContact): Promise<IContact> => {
 
@@ -54,12 +55,17 @@ const deleteContactFromDB = async (id: string): Promise<IContact | null> => {
     return deleteContact
 }
 
-const sendMessageFromDB = async (payload: { id: string, message: string }) => {
+const sendMessageFromDB = async (user: JwtPayload, payload: { id: string, message: string }) => {
 
     const { id, message } = payload;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Contact ID")
+    }
+
+    const isExistUser = await User.findById(user.id).lean().exec();
+    if (!isExistUser) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist")
     }
 
     const contact: any = await Contact.findById(id).populate('user', 'name').lean();
@@ -69,8 +75,7 @@ const sendMessageFromDB = async (payload: { id: string, message: string }) => {
 
     const payloadMessage =
         `CarePrime Alert
-    ${contact?.user?.name}
-
+    ${isExistUser?.name}
     ${message}
     `
 
@@ -85,7 +90,10 @@ const sendMessageFromDB = async (payload: { id: string, message: string }) => {
 const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
     try {
 
-        const contact: any = await Contact.findOne({ user: user.id }).populate('user', 'name').lean();
+        const isExistUser = await User.findById(user.id).lean().exec();
+    if (!isExistUser) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist")
+    }
         const contacts = await Contact.find({ user: user.id }).lean();
 
         if (!contacts?.length) {
@@ -94,7 +102,7 @@ const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
 
         const payloadMessage =
             `CarePrime Alert
-            ${contact?.user?.name}
+            ${isExistUser?.name}
             ${message}`
 
         await Promise.all(
