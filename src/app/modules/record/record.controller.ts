@@ -37,8 +37,20 @@ const updateRecord = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const deleteRecord = catchAsync(async (req: Request, res: Response) => {
+    const result = await RecordService.deleteRecordFromDB(req.params.id)
+  
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: 'Medical History Deleted successfully',
+        data: result
+    })
+})
+
 export const RecordController = {
     insertRecord,
     retrievedRecords,
-    updateRecord
+    updateRecord,
+    deleteRecord
 }

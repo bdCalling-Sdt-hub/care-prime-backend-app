@@ -56,4 +56,9 @@ router.route('/')
         RecordController.retrievedRecords
     );
 
+router.delete("/:id",
+    auth(USER_ROLES.USER),
+    RecordController.deleteRecord
+);
+
 export const RecordRoutes = router;

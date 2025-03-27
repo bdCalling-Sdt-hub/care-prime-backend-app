@@ -98,8 +98,26 @@ const updateRecordInDB = async (id: string, payload: IAnswer): Promise<null> => 
     return null;
 }
 
+const deleteRecordFromDB = async (id: string): Promise<IRecord> => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid record id");
+    }
+
+    const isExist = await Record.findById(id).lean();
+    if (!isExist) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Record not found");
+    }
+
+    const record = await Record.findByIdAndDelete(id);
+    if (!record) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Record not created");
+    }
+    return record;
+}
+
 export const RecordService = {
     insertRecordInDB,
     retrievedRecordsFromDB,
-    updateRecordInDB
+    updateRecordInDB,
+    deleteRecordFromDB
 }

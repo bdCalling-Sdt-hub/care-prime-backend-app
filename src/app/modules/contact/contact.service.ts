@@ -18,7 +18,7 @@ const insertContactInDB = async (contact: IContact): Promise<IContact> => {
     if (!newContact) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Error creating contact");
     }
-    return await newContact.save();
+    return newContact;
 }
 
 const retrieveContacts = async (user: JwtPayload, query: Record<string, any>): Promise<{ contacts: IContact[], pagination: any }> => {
@@ -62,12 +62,19 @@ const sendMessageFromDB = async (payload: { id: string, message: string }) => {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid Contact ID")
     }
 
-    const contact = await Contact.findById(id).lean();
+    const contact: any = await Contact.findById(id).populate('user', 'name').lean();
     if (!contact) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "No Found Contact for Sending Message")
     }
 
-    const send = await sendSMS(contact?.phone, message)
+    const payloadMessage =
+        `CarePrime Alert
+    ${contact?.user?.name}
+
+    ${message}
+    `
+
+    const send = await sendSMS(contact?.phone, payloadMessage)
     if (send.invalid) {
         throw new ApiError(StatusCodes.BAD_REQUEST, send.message)
     }
@@ -77,14 +84,21 @@ const sendMessageFromDB = async (payload: { id: string, message: string }) => {
 
 const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
     try {
+
+        const contact: any = await Contact.findOne({ user: user.id }).populate('user', 'name').lean();
         const contacts = await Contact.find({ user: user.id }).lean();
 
         if (!contacts?.length) {
             throw new ApiError(StatusCodes.BAD_REQUEST, "No Found Contact for Sending Message");
         }
 
+        const payloadMessage =
+            `CarePrime Alert
+            ${contact?.user?.name}
+            ${message}`
+
         await Promise.all(
-            contacts.map(contact => sendSMS(contact?.phone, message))
+            contacts.map(contact => sendSMS(contact?.phone, payloadMessage))
         );
 
         return "Messages Sent Successfully";
@@ -92,7 +106,6 @@ const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
         throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to send group messages");
     }
 };
-
 
 
 export const ContactService = {
