@@ -73,7 +73,7 @@ const sendMessageFromDB = async (user: JwtPayload, payload: { id: string, messag
         throw new ApiError(StatusCodes.BAD_REQUEST, "No Found Contact for Sending Message")
     }
 
-    const payloadMessage = `CarePrime Alert\n${isExistUser?.name}\n${message}`;
+    const payloadMessage = `CarePrime Alert\n${isExistUser?.name}\n\n${message}`; 
 
 
     const send = await sendSMS(contact?.phone, payloadMessage)
@@ -97,7 +97,7 @@ const sendGroupMessageFromDB = async (user: JwtPayload, message: string) => {
             throw new ApiError(StatusCodes.BAD_REQUEST, "No Found Contact for Sending Message");
         }
 
-        const payloadMessage = `CarePrime Alert\n${isExistUser?.name}\n${message}`;
+        const payloadMessage = `CarePrime Alert\n${isExistUser?.name}\n\n${message}`; 
 
         await Promise.all(
             contacts.map(contact => sendSMS(contact?.phone, payloadMessage))
