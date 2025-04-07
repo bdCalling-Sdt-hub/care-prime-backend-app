@@ -14,6 +14,7 @@ export type IUser = {
     email: string;
     password: string;
     profile: string;
+    nickname: string;
     verified: boolean;
     contact: string;
     gender: "Male" | "Female" | "Other";

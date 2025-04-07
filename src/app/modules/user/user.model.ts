@@ -49,6 +49,10 @@ const userSchema = new Schema<IUser, UserModal>(
             type: Boolean,
             default: true
         },
+        nickname: {
+            type: String,
+            default: ''
+        },
         contact: {
             type: String,
             default: ''
