@@ -12,6 +12,9 @@ const serviceSchema = new Schema<ICategory, CategoryModel>(
       type: String,
       required: true
     },
+    sortOrder: {
+      type: Number
+    }
   },
   { timestamps: true },
 )
