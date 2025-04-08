@@ -27,7 +27,7 @@ const createCategoryToDB = async (payload: ICategory) => {
 const getCategoriesFromDB = async (query: Record<string, any>): Promise<{ categories: ICategory[], pagination: any }> => {
 
   const result = new QueryBuilder(
-    Category.find().sort({ sortOrder: 1, createdAt: -1 }), 
+    Category.find().sort({ sortOrder: -1 }), 
     query
   ).paginate().search(["name"]);
   const categories = await result.queryModel.select("name image").lean();
